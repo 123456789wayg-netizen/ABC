@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>米粒的英文字母大冒險</title>
+    <style>
+        :root {
+            --bg-color: #f7f3e9;
+            --text-color: #5c4033;
+            --card-bg: #ffffff;
+            --primary-color: #8da25c;
+            --accent-color: #de7a57;
+            --shadow-color: rgba(92, 64, 51, 0.15);
+            --sky-color: #bae1ff;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #2c3e35;
+            --text-color: #f4eae1;
+            --card-bg: #3a5043;
+            --primary-color: #a3b899;
+            --accent-color: #e28f6b;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --sky-color: #1a2f26;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Microsoft JhengHei', sans-serif;
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 吉卜力風背景裝飾 */
+        .sky-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 220px;
+            background: linear-gradient(to bottom, var(--sky-color), transparent);
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 100px;
+            opacity: 0.6;
+            animation: floatCloud 25s linear infinite;
+        }
+        .cloud::before, .cloud::after {
+            content: ''; position: absolute; background: white; border-radius: 50%;
+        }
+        .cloud.c1 { width: 120px; height: 40px; top: 30px; left: -150px; }
+        .cloud.c1::before { width: 50px; height: 50px; top: -20px; left: 15px; }
+        .cloud.c1::after { width: 70px; height: 70px; top: -35px; left: 45px; }
+        
+        .cloud.c2 { width: 80px; height: 30px; top: 100px; left: -100px; animation-delay: 10s; animation-duration: 35s; }
+        .cloud.c2::before { width: 40px; height: 40px; top: -15px; left: 10px; }
+        .cloud.c2::after { width: 50px; height: 50px; top: -25px; left: 30px; }
+
+        @keyframes floatCloud {
+            0% { left: -150px; }
+            100% { left: 100%; }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .top-controls {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        button.nav-btn {
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 10px 18px;
+            font-size: 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px var(--shadow-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button.nav-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px var(--shadow-color);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            text-shadow: 2px 2px 0px var(--card-bg), 4px 4px 0px var(--shadow-color);
+            margin-bottom: 10px;
+            animation: bounce Title 2s ease infinite alternate;
+        }
+
+        @keyframes bounceTitle {
+            0% { transform: translateY(0) rotate(-1deg); }
+            100% { transform: translateY(-5px) rotate(1deg); }
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            border: 3px solid var(--primary-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            transform: scale(1.05);
+        }
+
+        .content-section {
+            display: none;
+            width: 100%;
+            max-width: 950px;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 字母卡片網格 */
+        .alphabet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 20px;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .letter-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 8px 15px var(--shadow-color);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .letter-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            border-color: var(--primary-color);
+        }
+
+        .letter-card:hover .card-emoji {
+            animation: bounceEmoji 0.6s ease infinite alternate;
+        }
+
+        .card-letter {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .card-emoji {
+            font-size: 3rem;
+            display: block;
+            margin: 10px 0;
+            transition: transform 0.3s;
+        }
+
+        .card-word {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text-color);
+            text-transform: capitalize;
+        }
+
+        @keyframes bounceEmoji {
+            0% { transform: scale(1) translateY(0); }
+            100% { transform: scale(1.2) translateY(-10px); }
+        }
+
+        /* 測驗挑戰區 */
+        .quiz-container {
+            background-color: var(--card-bg);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 12px 25px var(--shadow-color);
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .quiz-progress {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .progress-bar-outer {
+            width: 100%;
+            height: 12px;
+            background-color: var(--bg-color);
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .quiz-question {
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .quiz-audio-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            font-size: 2.5rem;
+            cursor: pointer;
+            margin-bottom: 30px;
+            box-shadow: 0 6px var(--shadow-color);
+            animation: pulseBtn 1.8s infinite;
+        }
+
+        @keyframes pulseBtn {
+            0% { transform: scale(1); box-shadow: 0 6px var(--shadow-color), 0 0 0 0px rgba(222, 122, 87, 0.4); }
+            70% { transform: scale(1.05); box-shadow: 0 6px var(--shadow-color), 0 0 0 15px rgba(222, 122, 87, 0); }
+            100% { transform: scale(1); box-shadow: 0 6px var(--shadow-color), 0 0 0 0px rgba(222, 122, 87, 0); }
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .option-btn {
+            background-color: var(--bg-color);
+            border: 3px solid var(--primary-color);
+            color: var(--text-color);
+            border-radius: 20px;
+            padding: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px var(--shadow-color);
+        }
+
+        .option-btn:hover {
+            transform: scale(1.03);
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+        }
+
+        /* 答題回饋動畫效果 */
+        .feedback-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(255,255,255,0.9);
+            border-radius: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        [data-theme="dark"] .feedback-overlay {
+            background-color: rgba(44, 62, 53, 0.95);
+        }
+
+        .feedback-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .feedback-emoji {
+            font-size: 6rem;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+
+        /* 結算畫面 */
+        .result-view {
+            display: none;
+            text-align: center;
+        }
+
+        .result-view.show {
+            display: block;
+        }
+
+        .mili-mascot {
+            font-size: 5rem;
+            animation: bounceMascot 1s ease infinite alternate;
+            margin-bottom: 15px;
+        }
+
+        @keyframes bounceMascot {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-15px); }
+        }
+
+        /* 響應式微調 */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .alphabet-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
+            .card-letter { font-size: 2.5rem; }
+            .card-emoji { font-size: 2.2rem; }
+            .quiz-options { grid-template-columns: 1fr; gap: 12px; }
+            .option-btn { padding: 15px; font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sky-bg">
+        <div class="cloud c1"></div>
+        <div class="cloud c2"></div>
+    </div>
+
+    <header>
+        <div class="top-controls">
+            <button class="nav-btn" onclick="toggleTheme()" id="themeBtn">🌙 深色模式</button>
+            <button class="nav-btn" onclick="playGuide('歡迎來到米粒的英文字母大冒險！一起來快樂學英文吧！')">🔊 語音導覽</button>
+        </div>
+        <h1>🌱 米粒的英文字母大冒險 🍃</h1>
+        
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchTab('learn')">🎒 字母島卡片</button>
+            <button class="tab-btn" onclick="switchTab('quiz'); startQuiz();">🏆 森林大挑戰</button>
+        </div>
+    </header>
+
+    <!-- 學習卡片區 -->
+    <section id="learn-section" class="content-section active">
+        <div class="alphabet-grid" id="alphabetGrid"></div>
+    </section>
+
+    <!-- 測驗挑戰區 -->
+    <section id="quiz-section" class="content-section">
+        <div class="quiz-container">
+            <!-- 答題回饋層 -->
+            <div class="feedback-overlay" id="feedbackOverlay">
+                <div class="feedback-emoji" id="feedbackEmoji">🎉</div>
+                <h2 id="feedbackText" style="margin-top: 15px; font-size: 1.8rem;">太棒了！</h2>
+            </div>
+
+            <!-- 測驗進行中 -->
+            <div id="quiz-play-view">
+                <div class="quiz-progress" id="quizProgressText">第 1 題 / 共 10 題</div>
+                <div class="progress-bar-outer">
+                    <div class="progress-bar-inner" id="quizProgressBar"></div>
+                </div>
+                <div class="quiz-question">聽一聽，米粒唸的是哪一個字母呢？</div>
+                <button class="quiz-audio-btn" onclick="playCurrentQuestionAudio()">📢</button>
+                <div class="quiz-options" id="quizOptionsContainer"></div>
+            </div>
+
+            <!-- 測驗結果結算 -->
+            <div id="quiz-result-view" class="result-view">
+                <div class="mili-mascot">🌾✨</div>
+                <h2 style="font-size: 2rem; margin-bottom: 15px; color: var(--accent-color);">挑戰完成！</h2>
+                <p id="resultScoreText" style="font-size: 1.5rem; margin-bottom: 25px; font-weight: bold;"></p>
+                <button class="nav-btn" onclick="startQuiz()" style="margin: 0 auto; padding: 12px 30px; font-size: 1.2rem;">🔄 再玩一次</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // 26個字母與吉卜力森林風相關的幼兒單字資料
+        const alphabetData = [
+            { letter: 'A', word: 'apple', emoji: '🍎' },
+            { letter: 'B', word: 'bird', emoji: '🐦' },
+            { letter: 'C', word: 'cat', emoji: '🐱' },
+            { letter: 'D', word: 'deer', emoji: '🦌' },
+            { letter: 'E', word: 'egg', emoji: '🥚' },
+            { letter: 'F', word: 'frog', emoji: '🐸' },
+            { letter: 'G', word: 'garden', emoji: '🏡' },
+            { letter: 'H', word: 'house', emoji: '🏠' },
+            { letter: 'I', word: 'ice', emoji: '🧊' },
+            { letter: 'J', word: 'juice', emoji: '🧃' },
+            { letter: 'K', word: 'kite', emoji: '🪁' },
+            { letter: 'L', word: 'leaf', emoji: '🍃' },
+            { letter: 'M', word: 'mushroom', emoji: '🍄' },
+            { letter: 'N', word: 'nest', emoji: '🪹' },
+            { letter: 'O', word: 'owl', emoji: '🦉' },
+            { letter: 'P', word: 'pear', emoji: '🍐' },
+            { letter: 'Q', word: 'queen', emoji: '👸' },
+            { letter: 'R', word: 'rain', emoji: '🌧️' },
+            { letter: 'S', word: 'sprout', emoji: '🌱' },
+            { letter: 'T', word: 'tree', emoji: '🌳' },
+            { letter: 'U', word: 'umbrella', emoji: '☂️' },
+            { letter: 'V', word: 'vegetable', emoji: '🥕' },
+            { letter: 'W', word: 'wind', emoji: '💨' },
+            { letter: 'X', word: 'xylophone', emoji: '🪵' },
+            { letter: 'Y', word: 'yarn', emoji: '🧶' },
+            { letter: 'Z', word: 'zebra', emoji: '🦓' }
+        ];
+
+        // 語音引導功能 (Web Speech API)
+        function playGuide(text, lang = 'zh-TW') {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // 停止之前的語音
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang;
+                utterance.rate = 0.9; // 稍微慢一點讓小朋友聽得懂
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function playEnglish(text) {
+            playGuide(text, 'en-US');
+        }
+
+        // 切換主題模式
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeBtn');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                btn.innerHTML = '🌙 深色模式';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerHTML = '☀️ 淺色模式';
+            }
+        }
+
+        // 切換頁籤
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            
+            if (tab === 'learn') {
+                document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+                document.getElementById('learn-section').classList.add('active');
+                playGuide('點選字母卡，跟著米粒一起讀英文吧！');
+            } else {
+                document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+                document.getElementById('quiz-section').classList.add('active');
+            }
+        }
+
+        // 初始化字母卡
+        const grid = document.getElementById('alphabetGrid');
+        alphabetData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'letter-card';
+            card.innerHTML = `
+                <div class="card-letter">${item.letter}</div>
+                <div class="card-emoji">${item.emoji}</div>
+                <div class="card-word">${item.word}</div>
+            `;
+            card.onclick = () => {
+                playEnglish(`${item.letter}, ${item.word}`);
+            };
+            grid.appendChild(card);
+        });
+
+        // 測驗邏輯變數
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let quizQuestions = [];
+        const totalQuestions = 10;
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            // 隨機抽選10個不重複的字母作爲題目
+            const shuffled = [...alphabetData].sort(() => 0.5 - Math.random());
+            quizQuestions = shuffled.slice(0, totalQuestions);
+            
+            document.getElementById('quiz-play-view').style.display = 'block';
+            document.getElementById('quiz-result-view').classList.remove('show');
+            
+            playGuide('歡迎來到森林大挑戰！聽聲音選出正確的字母卡喔！');
+            setTimeout(loadQuestion, 2500);
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= totalQuestions) {
+                showResult();
+                return;
+            }
+
+            // 更新進度條與文字
+            document.getElementById('quizProgressText').innerText = `第 ${currentQuestionIndex + 1} 題 / 共 ${totalQuestions} 題`;
+            const progressPercent = (currentQuestionIndex / totalQuestions) * 100;
+            document.getElementById('quizProgressBar').style.width = `${progressPercent}%`;
+
+            const currentQuestion = quizQuestions[currentQuestionIndex];
+            
+            // 產生隨機選項（1個正確 + 3個隨機錯誤）
+            let options = [currentQuestion];
+            while (options.length < 4) {
+                const randomItem = alphabetData[Math.floor(Math.random() * alphabetData.length)];
+                if (!options.some(o => o.letter === randomItem.letter)) {
+                    options.push(randomItem);
+                }
+            }
+            // 打亂選項順序
+            options.sort(() => 0.5 - Math.random());
+
+            // 渲染選項按鈕
+            const optionsContainer = document.getElementById('quizOptionsContainer');
+            optionsContainer.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt.letter;
+                btn.onclick = () => checkAnswer(opt.letter);
+                optionsContainer.appendChild(btn);
+            });
+
+            // 自動播放一次題目聲音
+            playCurrentQuestionAudio();
+        }
+
+        function playCurrentQuestionAudio() {
+            if (quizQuestions[currentQuestionIndex]) {
+                playEnglish(quizQuestions[currentQuestionIndex].letter);
+            }
+        }
+
+        function checkAnswer(selectedLetter) {
+            const correctAnswer = quizQuestions[currentQuestionIndex].letter;
+            const overlay = document.getElementById('feedbackOverlay');
+            const emojiEl = document.getElementById('feedbackEmoji');
+            const textEl = document.getElementById('feedbackText');
+
+            overlay.classList.add('show');
+
+            if (selectedLetter === correctAnswer) {
+                score++;
+                emojiEl.innerText = '🎈✨';
+                textEl.innerText = '答對了！你真棒！';
+                playGuide('答對了！你真棒！');
+            } else {
+                emojiEl.innerText = '🍂🐾';
+                textEl.innerText = `再接再厲！答案是 ${correctAnswer}`;
+                playGuide(`沒關係，再接再厲！這一個是 ${correctAnswer}`);
+            }
+
+            setTimeout(() => {
+                overlay.classList.remove('show');
+                currentQuestionIndex++;
+                loadQuestion();
+            }, 2500);
+        }
+
+        function showResult() {
+            document.getElementById('quiz-play-view').style.display = 'none';
+            document.getElementById('quiz-result-view').classList.add('show');
+            document.getElementById('quizProgressBar').style.width = '100%';
+
+            const resultText = `你答對了 ${score} 題！`;
+            document.getElementById('resultScoreText').innerText = resultText;
+            
+            if (score >= 8) {
+                playGuide(`挑戰完成！${resultText}你太厲害了，真是不折不扣的字母小博士！`);
+            } else {
+                playGuide(`挑戰完成！${resultText}很棒的嘗試！多和米粒多練習幾次，一定會更厲害喔！`);
+            }
+        }
+
+        // 網頁開啟時預設歡迎詞
+        window.onload = () => {
+            setTimeout(() => {
+                playGuide('歡迎來到米粒的英文字母大冒險！一起來快樂學英文吧！');
+            }, 800);
+        };
+    </script>
+</body>
+</html>
